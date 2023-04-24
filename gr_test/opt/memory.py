@@ -6,8 +6,22 @@ class memory:
     #   3.出来事の発生時間
     #   4.出来事の発生場所"
     #   5.出来事の重要度
-    event =[]
+    event = []
     
-    def ev_add(kind,contxt,time,where,important):
-        event = [kind,contxt,time,where,important]
+    #イベントの追加
+    def ev_add(event,kind,contxt,time,where,important):
+        event.append([kind,contxt,time,where,important])
+    
+    #イベントを返す
+    #引数をもう少し考える
+    def return_event(event,ID):
+        return event[ID]
+    
+    #イベントの検索
+    #　TODO:検索方法を考える
+    def Is_check_event(event,ID):
+        if event[ID] == None:
+            return 0
+        else:
+            return 1
     
