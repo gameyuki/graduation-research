@@ -6,8 +6,8 @@ class agent(memory):
         self.memory = memory()
 
     #計画
-    #第一引数　出来事
-    #第二引数　記憶　違うかも
+    #第一引数 出来事
+    #第二引数 記憶 違うかも
     def plan():
         return 0
     
