@@ -1,25 +1,43 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 
-model_name = "microsoft/DialoGPT-large"
-# model_name = "microsoft/DialoGPT-medium"
+model_name_1 = "microsoft/DialoGPT-large"
+model_name_2 = "microsoft/DialoGPT-medium"
 # model_name = "microsoft/DialoGPT-small"
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForCausalLM.from_pretrained(model_name)
+
+tokenizer_1 = AutoTokenizer.from_pretrained(model_name_1)
+tokenizer_2 = AutoTokenizer.from_pretrained(model_name_2)
+
+model_1 = AutoModelForCausalLM.from_pretrained(model_name_1)
+model_2 = AutoModelForCausalLM.from_pretrained(model_name_2)
+
+# 初期の入力テキスト
+text = "Hello, how are you?"
 
 for step in range(5):
-
-    text = input(">> You:")
-
-    input_ids = tokenizer.encode(text + tokenizer.eos_token, return_tensors="pt")
     
-    bot_input_ids = torch.cat([chat_history_ids, input_ids], dim=-1) if step > 0 else input_ids
-    
-    chat_history_ids = model.generate(
-        bot_input_ids,
+    #モデル１の文字生成
+    input_ids_1 = tokenizer_1.encode(text + tokenizer_1.eos_token, return_tensors="pt")
+    bot_input_ids_1 = torch.cat([chat_history_ids_1, input_ids_1], dim=-1) if step > 0 else input_ids_1
+    chat_history_ids_1 = model_1.generate(
+        bot_input_ids_1,
         max_length=1000,
-        pad_token_id=tokenizer.eos_token_id,
+        pad_token_id=tokenizer_1.eos_token_id,
     )
+    output_1 = tokenizer_1.decode(chat_history_ids_1[:, bot_input_ids_1.shape[-1]:][0], skip_special_tokens=True)
+    print(f"Model1: {output_1}")
     
-    output = tokenizer.decode(chat_history_ids[:, bot_input_ids.shape[-1]:][0], skip_special_tokens=True)
-    print(f"DialoGPT: {output}")
+     #モデル2の文字生成
+    input_ids_2 = tokenizer_2.encode(output_1 + tokenizer_2.eos_token, return_tensors="pt")
+    bot_input_ids_2 = torch.cat([chat_history_ids_2, input_ids_2], dim=-1) if step > 0 else input_ids_2
+    chat_history_ids_2 = model_1.generate(
+        bot_input_ids_2,
+        max_length=1000,
+        pad_token_id=tokenizer_2.eos_token_id,
+    )
+    output_2 = tokenizer_2.decode(chat_history_ids_2[:, bot_input_ids_2.shape[-1]:][0], skip_special_tokens=True)
+    print(f"Model2: {output_2}")
+    
+    # モデル1の次の入力はモデル2の出力
+    text = output_2
+    
