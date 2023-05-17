@@ -166,3 +166,8 @@ amazon_reviews_multilingual_JP_v1_00.tsv
 
 model.pth
 pytorch_model.bin
+
+*.txt
+*.json
+*.model
+gr_test/opt/output/
